@@ -5,43 +5,141 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Expense calculator</title>
-    <style>
-      body {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        align-items: center;
-        justify-content: center;
-      }
-      .textElements {
-        display: flex;
-      }
-      .textElements > h2 {
-        padding: 1rem;
-      }
-    </style>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.7.2/js/all.js"
+      integrity="sha384-0pzryjIRos8mFBWMzSSZApWtPl/5++eIfzYmTgBBmXYdhvxPc+XcFEk+zJwDgWbP"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
-    <div class="textElements">
-      <h2 id="headingEl1">0</h2>
-      <h2>:</h2>
-      <h2 id="headingEl2">0</h2>
+    <nav class="navbar navbar-dark bg-dark">
+      <span class="navbar-brand mb-0 h1">Xpers</span>
+      <span class="navbar-brand mb-0 h1" id="headingEl2">0</span>
+    </nav>
+    <div class="container-fluid bg-light" style="min-height: 100vh">
+      <div class="container">
+        <div class="jumbotron mt-4">
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              id="inputAmount"
+              class="form-control"
+              placeholder="Amount spent"
+              aria-label="Amount spent"
+              aria-describedby="spent in rupee"
+            />
+            <div class="input-group-append">
+              <span class="input-group-text" id="spent in rupee">₹</span>
+            </div>
+          </div>
+
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="spent at">@</span>
+            </div>
+            <input
+              type="text"
+              id="inputDesc"
+              class="form-control"
+              placeholder="spent On"
+              aria-label="spent On"
+              aria-describedby="spent at"
+            />
+            <div class="input-group-append">
+              <button
+                id="addExpense"
+                class="btn btn-outline-primary"
+                type="button"
+                id="button-addon2"
+              >
+                Add
+              </button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <ul class="list-group" id="outputArea"></ul>
+        </div>
+      </div>
     </div>
-    <input type="text" id="inputAmount" />
-    <button id="addExpense">+</button>
     <script>
+      //ref
       const inputAmount = document.querySelector("#inputAmount");
+      const inputDesc = document.querySelector("#inputDesc");
       const addButton = document.querySelector("#addExpense");
-      const headingEl1 = document.querySelector("#headingEl1");
       const headingEl2 = document.querySelector("#headingEl2");
+      const outputAreaEl = document.querySelector("#outputArea");
+      let expensesArray = [];
       let totalAmount = 0;
       function addExpenseFunction() {
+        const expense = {};
+        //extracting values
         const textAmount = inputAmount.value;
+        const description = inputDesc.value;
+        //putting in object
+        expense.amount = Number(textAmount);
+        expense.desc = description;
+        expense.moment = new Date();
         totalAmount = totalAmount + Number(textAmount);
         headingEl2.textContent = totalAmount;
-        headingEl1.textContent = headingEl1.textContent + `+ ${textAmount}`;
+
+        //resetting the input values
         inputAmount.value = "";
-        console.log({ textAmount, totalAmount });
+        inputDesc.value = "";
+        expensesArray.push(expense);
+        //pushing into the array
+        displayExpenses();
+      }
+      function displayExpenses() {
+        const expenseElements = expensesArray.map((item) => {
+          return createItemList(item);
+        });
+
+        const allExpenseElements = expenseElements.join("");
+
+        outputAreaEl.innerHTML = allExpenseElements;
+      }
+      function createItemList({ desc, amount, moment }) {
+        return `<li class="list-group-item d-flex justify-content-between">
+                    <div class="d-flex flex-column">
+                      ${desc}
+                      <small class="text-muted">${moment.toLocaleDateString(
+                        "US",
+                        {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        }
+                      )}</small>
+                    </div>
+                    <div>
+                      <span class="px-5">
+                              ${amount}
+                      </span>
+                      <button
+                      type="button"
+                      class="btn btn-outline-danger btn-sm"
+                      onclick="deleteItem(${moment.valueOf()})" >
+                        <i class="fas fa-trash-alt"></i>
+                      </button>
+                    </div>
+                  </li>`;
+      }
+      //deleting an item
+      function deleteItem(timeValue) {
+        const newExpenseArray = expensesArray.filter(
+          (item) => item.moment.valueOf() !== timeValue
+        );
+        expensesArray = newExpenseArray;
+        console.log(newExpenseArray);
+        displayExpenses();
       }
       addButton.addEventListener("click", addExpenseFunction, false);
     </script>
