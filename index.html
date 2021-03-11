@@ -87,15 +87,24 @@
         expense.amount = Number(textAmount);
         expense.desc = description;
         expense.moment = new Date();
-        totalAmount = totalAmount + Number(textAmount);
-        headingEl2.textContent = totalAmount;
 
         //resetting the input values
         inputAmount.value = "";
         inputDesc.value = "";
-        expensesArray.push(expense);
         //pushing into the array
+        expensesArray.push(expense);
+
+        //calulating the sum
+        calculateSumOfExpenses();
         displayExpenses();
+      }
+
+      function calculateSumOfExpenses() {
+        let sum = 0;
+        expensesArray.forEach((expense) => {
+          sum = sum + Number(expense.amount);
+        });
+        headingEl2.textContent = sum;
       }
       function displayExpenses() {
         const expenseElements = expensesArray.map((item) => {
@@ -139,6 +148,7 @@
         );
         expensesArray = newExpenseArray;
         console.log(newExpenseArray);
+        calculateSumOfExpenses();
         displayExpenses();
       }
       addButton.addEventListener("click", addExpenseFunction, false);
