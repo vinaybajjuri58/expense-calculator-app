@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense calculator</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        align-items: center;
+        justify-content: center;
+      }
+      .textElements {
+        display: flex;
+      }
+      .textElements > h2 {
+        padding: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="textElements">
+      <h2 id="headingEl1">0</h2>
+      <h2>:</h2>
+      <h2 id="headingEl2">0</h2>
+    </div>
+    <input type="text" id="inputAmount" />
+    <button id="addExpense">+</button>
+    <script>
+      const inputAmount = document.querySelector("#inputAmount");
+      const addButton = document.querySelector("#addExpense");
+      const headingEl1 = document.querySelector("#headingEl1");
+      const headingEl2 = document.querySelector("#headingEl2");
+      let totalAmount = 0;
+      function addExpenseFunction() {
+        const textAmount = inputAmount.value;
+        totalAmount = totalAmount + Number(textAmount);
+        headingEl2.textContent = totalAmount;
+        headingEl1.textContent = headingEl1.textContent + `+ ${textAmount}`;
+        inputAmount.value = "";
+        console.log({ textAmount, totalAmount });
+      }
+      addButton.addEventListener("click", addExpenseFunction, false);
+    </script>
+  </body>
+</html>
